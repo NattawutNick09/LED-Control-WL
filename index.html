@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBS Source Switcher</title>
+    <meta name="description" content="OBS Source Switcher - Control OBS sources like Resolume Arena">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/obs-websocket-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <!-- Status dot always visible -->
+        <div id="status-dot" class="status-dot disconnected"></div>
+
+        <!-- Collapsible connection panel -->
+        <div id="connection-panel" class="connection-panel">
+            <span id="status-label" class="status-label">Disconnected</span>
+            <div class="ws-input-group">
+                <input type="text" id="ws-host" class="ws-input" value="127.0.0.1" placeholder="Host">
+                <span class="ws-sep">:</span>
+                <input type="text" id="ws-port" class="ws-input ws-input-port" value="4455" placeholder="Port">
+            </div>
+            <button id="btn-connect" class="btn-connect" onclick="toggleConnect()">Connect</button>
+        </div>
+
+        <!-- Hide/Show toggle button -->
+        <button id="btn-toggle-panel" class="btn-toggle-panel" onclick="togglePanel()" title="ซ่อน/แสดง Connection">
+            <span id="toggle-panel-icon" class="toggle-panel-icon">&#x25C4;</span>
+        </button>
+
+        <!-- QR Code button -->
+        <button id="btn-qr" class="btn-qr" onclick="showQRModal()" title="แสดง QR Code สำหรับมือถือ">
+            <span class="qr-icon">&#x25A6;</span>
+        </button>
+
+        <div class="scene-panel">
+            <label class="scene-label">Scene</label>
+            <select id="scene-select" class="scene-select" onchange="onSceneChange()" disabled>
+                <option value="">-- Select Scene --</option>
+            </select>
+            <button class="btn-refresh" onclick="refreshSources()" title="Refresh Sources" id="btn-refresh" disabled>
+                <span class="refresh-icon">&#8635;</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- EMPTY STATE -->
+        <div id="empty-state" class="empty-state">
+            <div class="empty-icon">&#x2B21;</div>
+            <h2 class="empty-title">Connect to OBS</h2>
+            <p class="empty-desc">Connect via WebSocket then select a Scene to see your sources</p>
+        </div>
+
+        <!-- SOURCE GRID -->
+        <div id="source-grid" class="source-grid hidden"></div>
+
+        <!-- LOADING STATE -->
+        <div id="loading-state" class="loading-state hidden">
+            <div class="spinner"></div>
+            <p>Loading sources...</p>
+        </div>
+
+    </main>
+
+
+
+    <!-- QR Modal -->
+    <div id="qr-modal" class="qr-modal hidden" onclick="closeQRModal(event)">
+        <div class="qr-modal-box">
+            <button class="qr-modal-close" onclick="closeQRModal()">&#x2715;</button>
+            <h3 class="qr-modal-title">&#x25A6; เปิดบนมือถือ</h3>
+            <p class="qr-modal-desc">สแกน QR Code ด้วยมือถือในวงแลนเดียวกัน</p>
+            <div id="qr-canvas" class="qr-canvas"></div>
+            <p id="qr-url-text" class="qr-url-text"></p>
+            <div class="qr-tip">
+                <span class="qr-tip-icon">&#x2139;</span>
+                <span>ต้องเปิดไฟล์ผ่าน Web Server (เช่น Live Server) ไม่ใช่ file://</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
